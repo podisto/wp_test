@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+    wordpress:
+      depends_on:
+        - db
+      image: wordpress:latest
+      volumes:
+        - ./wordpress:/var/www/html
+      ports:
+        - "8080:80"
+      restart: always
+      environment:
+        WORDPRESS_DB_HOST: db:3306
+        WORDPRESS_DB_PASSWORD: wp_test
+      container_name: wp_test
+    db:
+      image: mysql:5.7
+      volumes:
+        - db_data:/var/lib/mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: wp_test
+        MYSQL_DATABASE: wp_test
+        MYSQL_USER: wp_test
+        MYSQL_PASSWORD: wp_test
+      container_name: wp_test_db
+    phpmyadmin:
+      depends_on:
+        - db
+      image: phpmyadmin/phpmyadmin
+      restart: always
+      ports:
+        - "3000:80"
+      environment:
+        PMA_HOST: db
+        MYSQL_ROOT_PASSWORD: wp_test
+volumes:
+  db_data:
